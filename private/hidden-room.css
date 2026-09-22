@@ -1,0 +1,83 @@
+/* الغرفة المخفية — أكثر غموضًا وسينمائية من قسم الذكريات العادي */
+.vault { position: fixed; inset: 0; z-index: 80; display: grid; grid-template-rows: auto auto minmax(0, 1fr); overflow: hidden;
+  padding: calc(.8rem + var(--safe-t)) 0 calc(.8rem + var(--safe-b));
+  background: radial-gradient(70% 55% at 50% 0%, rgba(74, 168, 255, .2), transparent 70%), radial-gradient(70% 50% at 50% 105%, rgba(255, 79, 154, .24), transparent 70%), rgba(3, 2, 9, .86);
+  animation: vaultIn 1s var(--ease) both; }
+@keyframes vaultIn { from { opacity: 0; filter: blur(12px); transform: scale(1.04); } }
+body.in-vault { overflow: hidden; }
+body.in-vault #app, body.in-vault .music-hint--app { visibility: hidden; }
+.vault__beam { position: absolute; top: -20%; width: 46vmax; height: 140%; pointer-events: none; opacity: .55; mix-blend-mode: screen; filter: blur(30px); }
+.vault__beam--a { right: 6%; background: linear-gradient(200deg, rgba(255, 79, 154, .38), transparent 60%); transform: rotate(14deg); animation: beam 14s ease-in-out infinite alternate; }
+.vault__beam--b { left: 4%; background: linear-gradient(160deg, rgba(74, 168, 255, .36), transparent 60%); transform: rotate(-16deg); animation: beam 18s ease-in-out infinite alternate-reverse; }
+@keyframes beam { to { transform: rotate(4deg) translateX(-6vw); opacity: .3; } }
+
+.vault__top { position: relative; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; padding: .2rem 1.2rem .6rem; }
+.vault__title { font-family: var(--f-display); font-weight: 400; font-size: clamp(2.6rem, 8vw, 3.8rem); line-height: 1.15;
+  background: linear-gradient(100deg, var(--blue-soft), #fff 50%, var(--rose-soft)); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 22px rgba(74, 168, 255, .55)); }
+.vault__sub { color: var(--mute); font-size: .92rem; }
+.vault__close { display: inline-flex; align-items: center; gap: .4rem; height: 42px; padding: 0 1rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .18); background: rgba(255, 255, 255, .06); color: var(--pearl); flex-shrink: 0; }
+.vault__close:hover { border-color: rgba(255, 79, 154, .7); box-shadow: 0 0 24px -6px rgba(255, 79, 154, .8); }
+
+.vtabs { position: relative; display: flex; gap: .5rem; padding: 0 1.2rem .5rem; }
+.vtab { position: relative; padding: .35rem 1.1rem; border-radius: 999px; border: 1px solid rgba(255, 255, 255, .14); background: rgba(255, 255, 255, .04); color: var(--mute); }
+.vtab.is-on { color: #fff; border-color: rgba(148, 207, 255, .6); background: rgba(74, 168, 255, .16); box-shadow: 0 0 26px -8px rgba(74, 168, 255, .9); }
+.vtab__badge { display: inline-grid; place-items: center; min-width: 1.35rem; height: 1.35rem; padding: 0 .3rem; margin-inline-start: .3rem; border-radius: 999px; background: var(--rose); color: #fff; font-size: .75rem; box-shadow: 0 0 14px var(--rose); }
+
+.vault__mem { position: relative; display: grid; grid-template-rows: minmax(0, 1fr) auto; min-height: 0; }
+.reel-wrap { position: relative; min-height: 0; display: grid; }
+.reel { display: flex; gap: 1rem; overflow-x: auto; overflow-y: hidden; scroll-snap-type: x mandatory; padding: .6rem calc(50% - min(42vw, 230px)) 1rem; scrollbar-width: none; outline: none; overscroll-behavior-x: contain; align-items: center; }
+.reel::-webkit-scrollbar { display: none; }
+.reel__nav { display: none; }
+.reel__meta { display: grid; justify-items: center; gap: .4rem; padding: .3rem 1.2rem 0; }
+.reel__line { width: min(260px, 60%); height: 3px; border-radius: 3px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+.reel__line i { display: block; height: 100%; width: 0; background: var(--grad); box-shadow: 0 0 12px rgba(255, 79, 154, .8); transition: width .4s var(--ease); }
+.vault__count { color: var(--mute); font-size: .85rem; min-height: 1.3rem; }
+
+.slide { position: relative; flex: 0 0 min(84vw, 460px); max-height: calc(100dvh - 15rem); scroll-snap-align: center; display: grid; align-content: start; gap: .9rem; padding: 1.1rem; border-radius: 30px; overflow-y: auto; scrollbar-width: none;
+  border: 1px solid rgba(255, 255, 255, .12); background: linear-gradient(170deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .015)), rgba(12, 9, 28, .84);
+  box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .95); opacity: .5; transform: scale(.93); filter: saturate(.7); transition: opacity .5s var(--ease), transform .5s var(--ease), filter .5s, box-shadow .5s; }
+.slide::-webkit-scrollbar { display: none; }
+.slide.is-active { opacity: 1; transform: scale(1); filter: none; }
+.slide--m.is-active { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .95), 0 0 70px -22px rgba(74, 168, 255, .75); border-color: rgba(74, 168, 255, .4); }
+.slide--l.is-active { box-shadow: 0 30px 80px -30px rgba(0, 0, 0, .95), 0 0 70px -22px rgba(255, 79, 154, .75); border-color: rgba(255, 79, 154, .4); }
+.slide__img { margin: 0; border-radius: 22px; overflow: hidden; flex-shrink: 0; }
+.slide__img img { width: 100%; max-height: 300px; object-fit: cover; }
+.slide__body { display: grid; gap: .8rem; align-content: start; }
+.slide__head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; flex-wrap: wrap; }
+.slide__head time { color: var(--mute); font-size: .8rem; }
+.slide__text { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--f-display); font-size: 1.55rem; line-height: 2.05; }
+.slide__text.is-long { font-family: var(--f-body); font-size: 1.05rem; line-height: 2; }
+
+.slide--cover { justify-items: center; align-content: center; text-align: center; background: radial-gradient(90% 60% at 50% 0%, rgba(255, 79, 154, .25), transparent 70%), rgba(12, 9, 28, .86); }
+.cover__frame { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 24px; overflow: hidden; border: 1px solid rgba(255, 255, 255, .16); box-shadow: 0 0 60px -14px rgba(74, 168, 255, .8); }
+.cover__img { width: 100%; height: 100%; object-fit: cover; }
+.cover__leak { position: absolute; inset: 0; mix-blend-mode: screen; background: radial-gradient(60% 70% at 100% 0%, rgba(255, 79, 154, .5), transparent 60%), radial-gradient(60% 70% at 0% 100%, rgba(74, 168, 255, .5), transparent 60%); }
+.cover__title { font-family: var(--f-display); font-weight: 400; font-size: 3.6rem; line-height: 1.2; text-shadow: 0 0 34px rgba(255, 79, 154, .7); }
+.cover__text { color: var(--pearl); }
+.cover__hint { color: var(--mute); font-size: .85rem; animation: hint2 2.4s ease-in-out infinite; }
+@keyframes hint2 { 50% { transform: translateX(-8px); opacity: .5; } }
+.slide--empty { justify-items: center; align-content: center; }
+.vstate { flex: 1; display: grid; place-items: center; min-width: 100%; }
+
+/* الأسئلة */
+.vault__q { position: relative; overflow-y: auto; padding: .4rem 1.2rem 1.5rem; display: grid; gap: .9rem; align-content: start; max-width: 760px; width: 100%; margin-inline: auto; }
+.q-intro { color: var(--mute); }
+.qcard { display: grid; gap: .6rem; padding: 1rem 1.1rem; border-radius: 22px; border: 1px solid rgba(255, 209, 102, .3); background: rgba(14, 11, 30, .85); }
+.qcard.is-answered { border-color: rgba(125, 255, 196, .3); }
+.qcard__head { display: flex; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.qcard__time { margin-inline-start: auto; color: var(--mute); font-size: .78rem; }
+.qcard__times { color: var(--mute); font-size: .8rem; }
+.qcard__q { font-size: 1.1rem; line-height: 1.9; overflow-wrap: anywhere; }
+.qcard__a { padding: .6rem .9rem; border-radius: 14px; background: rgba(125, 255, 196, .07); border: 1px solid rgba(125, 255, 196, .25); white-space: pre-wrap; overflow-wrap: anywhere; }
+.qform { display: grid; gap: .5rem; justify-items: start; }
+
+@media (min-width: 960px) {
+  .vault__top, .vtabs { padding-inline: 3rem; }
+  .slide { flex-basis: 470px; max-height: 72dvh; }
+  .reel { padding-inline: calc(50% - 235px); }
+  .reel__nav { display: grid; place-items: center; position: absolute; top: 50%; z-index: 3; width: 52px; height: 52px; border-radius: 50%; translate: 0 -50%; font-size: 1.8rem; line-height: 1;
+    border: 1px solid rgba(255, 255, 255, .2); background: rgba(12, 9, 28, .8); color: #fff; backdrop-filter: blur(8px); }
+  .reel__nav:hover:not([disabled]) { border-color: rgba(148, 207, 255, .8); box-shadow: 0 0 30px -4px rgba(74, 168, 255, .9); }
+  .reel__nav[disabled] { opacity: .25; }
+  .reel__nav--prev { right: 2.5rem; } .reel__nav--next { left: 2.5rem; }
+}

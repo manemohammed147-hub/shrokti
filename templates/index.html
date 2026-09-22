@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#07060d">
+  <meta name="color-scheme" content="dark">
+  <title>شروكتي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='52'%3E%F0%9F%92%97%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/screens.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/views.css') }}">
+</head>
+<body class="is-locked">
+
+  <!-- الأجواء: توهّج وردي/أزرق + جسيمات -->
+  <div class="atmos" aria-hidden="true">
+    <div class="orb orb--rose"></div>
+    <div class="orb orb--blue"></div>
+    <canvas id="fx"></canvas>
+    <div class="vignette"></div>
+  </div>
+
+  <!-- شاشة القفل -->
+  <section id="lock" class="screen lock" aria-label="شاشة الدخول">
+    <div class="lock__stage">
+      <div class="sigil" aria-hidden="true">
+        <svg viewBox="0 0 200 200" class="sigil__svg">
+          <defs>
+            <linearGradient id="sg" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#ff4f9a"/><stop offset="1" stop-color="#4aa8ff"/>
+            </linearGradient>
+          </defs>
+          <circle cx="100" cy="100" r="92" fill="none" stroke="url(#sg)" stroke-width="1.2" stroke-dasharray="2 7" class="sigil__ring"/>
+          <circle cx="100" cy="100" r="74" fill="none" stroke="url(#sg)" stroke-width="1.6" opacity=".7"/>
+          <path d="M100 148c-30-20-46-38-46-58 0-14 10-24 22-24 10 0 20 6 24 16 4-10 14-16 24-16 12 0 22 10 22 24 0 20-16 38-46 58z" fill="none" stroke="url(#sg)" stroke-width="2.4" class="sigil__heart"/>
+          <circle cx="100" cy="92" r="7" fill="url(#sg)"/>
+          <path d="M100 96v20" stroke="url(#sg)" stroke-width="5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h1 class="lock__title">شروكتي</h1>
+      <p class="lock__sub">عالمٌ صغير، لا يُفتح إلا بالرمز الصحيح</p>
+      <div id="lockPin"></div>
+    </div>
+    <button id="lockMusicBtn" class="music-hint" type="button" hidden>🎵 اضغط لتشغيل موسيقى الدخول</button>
+  </section>
+
+  <!-- اختيار الهوية بعد فتح القفل -->
+  <section id="identity" class="screen identity" hidden aria-label="من أنت">
+    <div class="identity__stage">
+      <p class="identity__kicker">تم فتح الباب</p>
+      <h2 class="identity__title">من الذي دخل الآن؟</h2>
+      <div class="who-grid">
+        <button class="who who--m" type="button" data-who="muhammad"><span class="who__mono">م</span><span class="who__name">محمد</span></button>
+        <button class="who who--l" type="button" data-who="lara"><span class="who__mono">ل</span><span class="who__name">لارا</span></button>
+      </div>
+      <p class="identity__msg" id="identityMsg" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- التطبيق الرئيسي -->
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="شروكتي — الرئيسية">شروكتي</a>
+      <span id="whoPill" class="who-pill" hidden></span>
+      <button id="restartTop" class="btn-restart" type="button" title="إعادة تشغيل التطبيق" aria-label="إعادة تشغيل التطبيق">
+        <span class="btn-restart__ico" aria-hidden="true">↺</span>
+        <span class="btn-restart__txt">إعادة تشغيل التطبيق</span>
+      </button>
+    </header>
+
+    <nav class="rail" id="rail" aria-label="التنقل الرئيسي"></nav>
+
+    <main class="stage" id="stage">
+      <!-- الرئيسية -->
+      <section class="view" id="view-home" data-view="home" aria-label="الرئيسية">
+        <div class="home">
+          <div class="home__hero">
+            <p class="home__hello" id="homeHello"></p>
+            <h1 class="home__title">شروكتي</h1>
+            <p class="home__tag">لمحمد ولارا</p>
+            <p class="home__lead" id="homeLead">شروكتي عالمٌ صغير صُنع لمحمد ولارا وحدهما: رسائل تُقرأ على مهل، وذكريات لا تُنسى، ومحمد AI يعرفه جيدًا ليجيبك عنه، ولعبة صغيرة تُضحك القلب. كل تفصيلة فيه كُتبت بحب، وكل ما فيه مذهل كأنه فيلم يُعرض لكما وحدكما.</p>
+          </div>
+          <div class="portals" id="portals"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-messages" data-view="messages" aria-label="رسائل" hidden></section>
+      <section class="view" id="view-memories" data-view="memories" aria-label="الذكريات" hidden></section>
+      <section class="view" id="view-ai" data-view="ai" aria-label="محمد AI" hidden></section>
+      <section class="view" id="view-game" data-view="game" aria-label="اضرب محمد" hidden></section>
+      <section class="view" id="view-sound" data-view="sound" aria-label="الصوت" hidden></section>
+      <section class="view" id="view-create" data-view="create" aria-label="إنشاء ذكريات خاصة" hidden></section>
+    </main>
+
+    <nav class="dock" id="dock" aria-label="التنقل السريع"></nav>
+
+    <div class="sheet" id="sheet" hidden>
+      <div class="sheet__scrim" data-close></div>
+      <div class="sheet__panel" role="dialog" aria-label="المزيد">
+        <div class="sheet__grip" aria-hidden="true"></div>
+        <div id="sheetItems" class="sheet__items"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- بوابة الدخول الإضافية (تُفتح من داخل النص فقط) -->
+  <div id="gate" class="gate" hidden role="dialog" aria-modal="true" aria-label="بوابة">
+    <div class="gate__stage">
+      <button class="gate__close" type="button" id="gateClose" aria-label="إغلاق">✕</button>
+      <div class="gate__door" aria-hidden="true"><span></span></div>
+      <h2 class="gate__title">أدخل الرمز</h2>
+      <p class="gate__sub">هناك من ينتظر خلف هذا الباب</p>
+      <div id="gatePin"></div>
+    </div>
+  </div>
+  <div id="vault" class="vault" hidden></div>
+
+  <button id="musicPrompt" class="music-hint music-hint--app" type="button" hidden>🎵 اضغط لتشغيل الموسيقى</button>
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <!-- الصوت: موسيقى فقط بدون مؤثرات -->
+  <audio id="aLock" data-key="louk" data-src="/assets/audio/lock-screen/louk.mp3" preload="none" loop></audio>
+  <audio id="aApp" data-key="pack" data-src="/assets/audio/app/pack.mp3" preload="none" loop></audio>
+  <audio id="aGharam" data-key="lara" data-src="/assets/audio/memories/lara.mp3" preload="none" loop></audio>
+
+  <script src="{{ url_for('static', filename='js/core.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/fx.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/audio.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/pin.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-home.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-messages.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-memories.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-ai.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-game.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-sound.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/view-create.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
